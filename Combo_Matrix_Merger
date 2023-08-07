@@ -1,0 +1,103 @@
+###
+library(biomaRt)
+listEnsembl()
+ensembl<- useEnsembl(biomart = "genes")
+datasets<-listDatasets(ensembl)
+###Connect database and dataset
+ensembl.con <- useMart("ensembl", dataset = 'dmelanogaster_gene_ensembl')
+
+attr <- listAttributes(ensembl.con)
+filters <- listFilters(ensembl.con)
+
+###Build Quary
+getBM(attributes = c('external_gene_name','ensembl_gene_id'),
+      filters = "flybase_gene_id",
+      values = GLDS_347_rna_seq_Normalized_Counts$GENE.ID,
+      mart = ensembl.con)
+
+getBM(attributes = c('description','gene_biotype','external_synonym','name_1006','definition_1006'),
+      values = GLDS_347_rna_seq_Normalized_Counts$GENE.ID,
+      mart = ensembl.con)
+###Merged Mouse data/Plant data
+Mouse_Merge <- Reduce(function(x,y) merge(x = x, y = y, by = "GENE.ID", all = "TRUE"), list(GLDS_245_rna_seq_Normalized_Counts, GLDS_248_rna_seq_Normalized_Counts))
+Plant_Merge <- Reduce(function(x,y) merge(x = x, y = y, by = "GENE.ID", all = "TRUE"), list(GLDS_38_rna_seq_Normalized_Counts, GLDS_37_rna_seq_Normalized_Counts))
+
+###Cbind Human, Plant, Fly, and Mouse
+library(dplyr)
+
+AWG_Combo_Matrix_Data_02 <- as.data.frame(bind_rows(JAXA_Fixed_ENSEMBL_IDs, Mouse_Merge, Plant_Merge, GLDS_347_rna_seq_Normalized_Counts))
+
+colnames(AWG_Combo_Matrix_Data_02)[1] <- "Human.ENSEMBL"
+colnames(Plant_Merge)[1] <- "Plant.ENSEMBL"
+colnames(Mouse_Merge)[1] <- "Mouse.ENSEMBL"
+colnames(Fly_Merge)[1] <- "GLDS_347_rna_seq_Normalized_Counts.ENSEMBL"
+
+### This does not work...
+# full_join(JAXA_Fixed_ENSEMBL_IDs, Mouse_Merge, Plant_Merge, GLDS_347_rna_seq_Normalized_Counts), by = NULL, copy = FALSE, suffix = c(".x", ".y", ".z", ".a"), keep = FALSE, na_matches = "na") 
+# (x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), …, keep = FALSE, na_matches = "na"
+
+### Inner Join  data.frames
+#rename column 1 headers to match
+library (tidyverse)
+
+list_df = list(df1,df2)
+Combo_Matrix <- list_df %>% reduce(inner_join, by='col_name')
+
+###
+colnames(JAXA_Fixed_ENSEMBL_IDs)[1]<-"Human Gene stable ID"
+colnames(Plant_Merge)[1]<-"Arabidopsis Gene stable ID"
+colnames(Mouse_Merge)[1]<-"Mouse Gene stable ID"
+colnames(GLDS_347_rna_seq_Normalized_Counts)[1]<-"DROM Gene stable ID"
+### Repeat for other df
+### May need to search for species orthology link in downloads
+library(readxl)
+Species_orthology_link_minimal_1_ <- read_excel("~/Downloads/Species_orthology_link (minimal) (1).xlsx")
+View(Species_orthology_link_minimal_1_)
+x<- Species_orthology_link_minimal_1_$`Human Gene stable ID`
+
+list_df = list(Species_orthology_link_minimal_, JAXA_Fixed_ENSEMBL_IDs)
+df2<- list_df %>% reduce(inner_join, by='Human Gene stable ID')
+
+list_df1 = list(df2, Plant_Merge)
+df3<-list_df1 %>% reduce(inner_join, by='Arabidopsis Gene stable ID')
+
+list_df2 = list(df3, Mouse_Merge) 
+df4<- list_df2 %>% reduce(inner_join, by='Mouse Gene stable ID')
+
+list_df3 = list(df4, GLDS_347_rna_seq_Normalized_Counts)
+Combo_Merged_Matrix_ENSEMBL <- list_df3 %>% reduce(inner_join, by='DROM Gene stable ID')
+
+### Cut down...
+Human_Combo_Merged_Matrix_ENSEMBL<-Combo_Merged_Matrix_ENSEMBL[,-2:-4]
+Plant_Combo_Merged_Matrix_ENSEMBL<-Combo_Merged_Matrix_ENSEMBL[,-c(1,3,4)]
+Fly_Combo_Merged_Matrix_ENSEMBL<-Combo_Merged_Matrix_ENSEMBL[,-c(1,2,4)]
+Mouse_Combo_Merged_Matrix_ENSEMBL<-Combo_Merged_Matrix_ENSEMBL[,-1:-3]
+
+UN_Human_Combo_Merged_Matrix_ENSEMBL[,-1] <- lapply(UN_Human_Combo_Merged_Matrix_ENSEMBL[,-1], as.integer)
+UN_Plant_Combo_Merged_Matrix_ENSEMBL[,-1] <- lapply(UN_Plant_Combo_Merged_Matrix_ENSEMBL[,-1], as.integer)
+UN_Fly_Combo_Merged_Matrix_ENSEMBL[,-1] <- lapply(UN_Fly_Combo_Merged_Matrix_ENSEMBL[,-1], as.integer)
+UN_Mouse_Combo_Merged_Matrix_ENSEMBL[,-1] <- lapply(UN_Mouse_Combo_Merged_Matrix_ENSEMBL[,-1], as.integer)
+
+write.csv(UN_Human_Combo_Merged_Matrix_ENSEMBL,'~/Ensembl_Matrix_Unnormalized/UN_Human_Combo_Merged_Matrix_ENSEMBL.csv')
+write.csv(UN_Plant_Combo_Merged_Matrix_ENSEMBL,'~/Ensembl_Matrix_Unnormalized/UN_Plant_Combo_Merged_Matrix_ENSEMBL.csv')
+write.csv(UN_Mouse_Combo_Merged_Matrix_ENSEMBL,'~/Ensembl_Matrix_Unnormalized/UN_Mouse_Combo_Merged_Matrix_ENSEMBL.csv')
+write.csv(UN_Fly_Combo_Merged_Matrix_ENSEMBL,'~/Ensembl_Matrix_Unnormalized/UN_Fly_Combo_Merged_Matrix_ENSEMBL.csv')
+
+### Create csv of significant genes...
+#upload sig genes document
+##Build Quary
+ensembl <- useEnsembl(biomart = "genes")
+datasets <- listDatasets(ensembl)
+ensembl.con <- useMart("ensembl", dataset = 'hsapiens_gene_ensembl')
+
+attr <- listAttributes(ensembl.con)
+filters <- listFilters(ensembl.con)
+
+
+Sig_Genes <- getBM(attributes = c('description','gene_biotype','external_synonym','name_1006','definition_1006','phenotype_description'),
+      values = Unnormalized_Counts_Sig_Genes$GENE.ID,
+      mart = ensembl.con)
+###This method runs a loop that hits the biomart server repeatedly rather than asking for everything at once...so we have to streamline what we ask for all at once without a loop
+Sig_Genes <- getBM(c('external_gene_name', 'description','gene_biotype','external_synonym','name_1006','definition_1006','phenotype_description'), 'external_gene_name', Unnormalized_Counts_Sig_Genes$GENE.ID, ensembl.con)
+
+write.csv(Sig_Genes, '~/Ensembl_Matrix_Unnormalized/Sig_Human_Genes.csv')

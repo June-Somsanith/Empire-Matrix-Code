@@ -40,3 +40,7 @@ AWG_Spleen_Ionizing_Radiation_Mice <- Reduce(function(x,y) merge(x = x, y = y, b
 AWG_Brain_Ionizing_Radiation_Mice <- Reduce(function(x,y) merge(x = x, y = y, by = "GENE.ID", all = "TRUE"), list(OSD_202_Unnormalized_Counts,OSD_374_Unnormalized_Counts))
 AWG_Arabidopsis_Radiation_Seedlings <- Reduce(function(x,y) merge(x = x, y = y, by = "GENE.ID", all = "TRUE"), list(OSD_502_Unnormalized_Counts,OSD_510_Unnormalized_Counts,OSD_508_Unnormalized_Counts,OSD_498_Unnormalized_Counts))
 
+write.csv(AWG_Spleen_Ionizing_Radiation_Mice,'~/downloads/AWG_Spleen_Ionizing_Radiation_Mice.csv')
+write.csv(AWG_Liver_Ionizing_Radiation_Merger_Mice,'~/downloads/AWG_Liver_Ionizing_Radiation_Mice.csv')
+write.csv(AWG_Brain_Ionizing_Radiation_Mice,'~/downloads/AWG_Brain_Ionizing_Radiation_Mice.csv')
+write.csv(AWG_Arabidopsis_Radiation_Seedlings,'~/downloads/AWG_Arabidopsis_Radiation_Seedlings.csv')

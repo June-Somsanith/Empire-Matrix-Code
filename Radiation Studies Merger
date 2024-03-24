@@ -35,3 +35,8 @@ Error: `path` does not exist: ‘~/Downloads/OSD-202 Unnormalized Counts.xlsx’
 > OSD_374_Unnormalized_Counts <- read_excel("~/Downloads/OSD-374 Unnormalized Counts.xlsx")
 > View(OSD_374_Unnormalized_Counts)                                                         
 
+AWG_Liver_Ionizing_Radiation_Merger_Mice <- Reduce(function(x,y) merge(x = x, y = y, by = "GENE.ID", all = "TRUE"), list(OSD_168_Unnormalized_Counts,OSD_294_Unnormalized_Counts))
+AWG_Spleen_Ionizing_Radiation_Mice <- Reduce(function(x,y) merge(x = x, y = y, by = "GENE.ID", all = "TRUE"), list(OSD_246_Unnormalized_Counts,OSD_211_Unnormalized_Counts))
+AWG_Brain_Ionizing_Radiation_Mice <- Reduce(function(x,y) merge(x = x, y = y, by = "GENE.ID", all = "TRUE"), list(OSD_202_Unnormalized_Counts,OSD_374_Unnormalized_Counts))
+AWG_Arabidopsis_Radiation_Seedlings <- Reduce(function(x,y) merge(x = x, y = y, by = "GENE.ID", all = "TRUE"), list(OSD_502_Unnormalized_Counts,OSD_510_Unnormalized_Counts,OSD_508_Unnormalized_Counts,OSD_498_Unnormalized_Counts))
+

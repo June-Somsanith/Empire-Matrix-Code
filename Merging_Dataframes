@@ -1,15 +1,28 @@
-#Merges more than two datasets
-AWG_Name_ <- Reduce(function(x,y) merge(x = x, y = y, by = "Gene.ID", all = "TRUE"), list()
+### Load Libraries
+library(dplyr)
 
-#Only able to merge two datasets
-AWG_Mouse_merged_transcriptional_data <- merge.data.frame(GLDS_243_rna_seq_Unnormalized_Counts, GLDS_244_rna_seq_Unnormalized_Counts, by.x = 'Gene.ID', all.x = 'TRUE')
+#Merges multiple datasets
+merge_datasets <- function(dataset_list, id_col = "Gene.ID") {
+  Reduce(function(x, y) merge(x, y, by = id_col, all = TRUE), dataset_list)
+}
+### Merge datasets
+if(length(datasets_to_merge) > 0){merged_data <- merge_datasets(datasets_to_merge)
+  ## Specify file name
+  output_filename <- readline(prompt = "Enger outpus CSV filename (blank will be default): ")
+  if (output_filename == " "){
+    output_filename <- "Merged_transcriptional_data.csv"
+  }
+  ## Specify output path
+  output_path <- readline(prompt = "Enter output CSV filename (blank will be default): ")
+  if (output_filename == "") {
+    output_filename <- getwd()
+  }
 
-#All merged data
-AWG_Name <- Reduce(function(x,y) merge(x = x, y = y, by = "Gene.ID", all = "TRUE"), list())
+  output_path <- file.path(output_apth, output_filename)
 
-#CSV for one dataset:
-  write.csv(GLDS_214_rna_seq_Unnormalized_Counts,'/AWG_Mouse_merged_transcriptional_data.csv')
-
-#Got it! CSV for multiple datasets
-  write.csv(Your DataFrame,"Path to export the DataFrame\\File Name.csv", row.names = FALSE)
-  write.csv(AWG_Mouse_merged_transcriptional_data,'~/M.mus/AWG_Mouse_merged_transcriptional_data.csv')
+  ## Write CSV
+  write.csv(merged_data, full_output_path, row.names = FALSE)
+  cat("CSV saved to:", full_output_path, "\n")
+} else {
+  cat("No datasets provdied to merge.\n")
+}

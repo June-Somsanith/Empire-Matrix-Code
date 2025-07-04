@@ -2,7 +2,7 @@
 This project is currently under construction.
 
 ## Purpose
-The purpose of this project is to gather information on the orthologis gene disregulation from species to species or kingdom to kingdom that occurs during spaceflight. Spaceflight studies are expensive, resource intensive, and not easilty replicable. We need to rally our information together and build off past discoveries to help guide future ones. With this in mind, this model will allow us to compare orthologous genes that have been disregulated in spaceflight and give us insights into what could be happening across multiple kingdom.
+The purpose of this project is to gather information on the orthologis gene disregulation from species to species or kingdom to kingdom that occurs during spaceflight. Spaceflight research is often limited by high costs, intensive resource requirements, and difficulties in replicating studies. To accelerate future discoveries, it is crucial to consolidate existing data. This model will facilitate the comparison of dysregulated orthologous genes from various spaceflight experiments, offering insights into the biological responses to spaceflight.
 
-## Notes
-This model allows comparison of multiple studies for different or similar species at once, however it is recommend to not use more than 5 studies at once to prevent the data from becomeing convulted. Because spaceflight studies are limited in number, replication, and test groups due to a varity of factors, some studies will be compareing 5 test subjects of species a against 25  of speices b. This is important to note as this can skew data.
+## Important Considerations
+While this model enables the simultaneous comparison of multiple studies involving similar or different species, we recommend analyzing no more than five studies at a time to maintain data integrity. It is important to acknowledge that due to the inherent limitations of spaceflight research, such as small sample sizes and limited replicatations, data sets may be disparate. For example, a study with five subjects of one species may be compared to another with 25 subjects of a different species, which could potentially skew the results.

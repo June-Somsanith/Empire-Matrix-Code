@@ -1,0 +1,5 @@
+# Purpose
+The purpose of this project is to gather information on the orthologis gene disregulation from species to species or kingdom to kingdom that occurs during spaceflight. Spaceflight studies are expensive, resource intensive, and not easilty replicable. We need to rally our information together and build off past discoveries to help guide future ones. With this in mind, this model will allow us to compare orthologous genes that have been disregulated in spaceflight and give us insights into what could be happening across multiple kingdom.
+
+# Notes
+This model allows comparison of multiple studies for different or similar species at once, however it is recommend to not use more than 5 studies at once to prevent the data from becomeing convulted. Because spaceflight studies are limited in number, replication, and test groups due to a varity of factors, some studies will be compareing 5 test subjects of species a against 25  of speices b. This is important to note as this can skew data.
